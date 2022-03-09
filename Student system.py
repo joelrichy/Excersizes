@@ -29,7 +29,7 @@ class Student:
 # invokes display info, prints student details
 def print_student_details():
     for student in student_list:
-        student.display_info
+        student.display_info()
 
 
 def select_student_age():
@@ -58,19 +58,21 @@ def count_students():
     for student in student_list:
         if subject in student.classes:
             count += 1
-        return count
+    if count > 0:
+        print(f"\n There are {count} students in {subject}")
+    else:
+        print(f"\n There are no students in {subject}")
 
 
-def find_student():
-    student_input = input("What student are you looking for: ").title()
+def find_student(text):
+    student_input = input(text).title()
+    found = False
     for student in student_list:
         if student_input == student.name:
+            found = True
             student.display_info()
-            #return student
-
-
-    print("Sorry that's not a valid student")
-    find_student()
+    if not found:
+        print(f"Sorry we do not have {student_input} in our database.")
 
 
 # main routine
@@ -80,16 +82,11 @@ student_list = []
 
 generate_students()
 
-# Student("Karen", "17", "123-4567", "WNLR", "13DTC, 13SMX", False)
-# Student("Bob", "18", "021-0263674", "BNNL", "13SMX", True)
-# Student("Lisa", "16", "022-4567123", "SKWR", "13DTC, 13SMX", False)
-# Student("Partick", "18", "023-01234567", "SCBE", "13ENG, 13CMX, 13SMX, 13DTC", True)
-
 # menu loop
 
 choice = ""
-
-while choice != "Q":
+while choice != "Q" and choice != 'q':
+    print("")
     print("*****MENU*****")
     print("")
     print("1. Count students taking a particular subject")
@@ -97,14 +94,17 @@ while choice != "Q":
     print("3. Print a list of students above a particular age")
     print("4. Get details of a particular student")
     menu_choice = input("What would you like to do"
-                   "- enter a number of press Q to exit: ")
-    if menu_choice == 1:
+                   " - enter a number of press Q to exit: ")
+    print("")
+    if menu_choice == "1":
         count_students()
-    elif menu_choice == 2:
+    elif menu_choice == "2":
         print_student_details()
-    elif menu_choice == 3:
+    elif menu_choice == "3":
         select_student_age()
-    elif menu_choice == 4:
-        find_student()
+    elif menu_choice == "4":
+        student_to_find = find_student("What student are you looking for: ")
+    elif choice == "Q" or choice == "q":
+        print("Goodbye")
     else:
-        print("Done")
+        print("***That is not a valid option***")

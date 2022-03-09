@@ -18,11 +18,6 @@ class Book:
         print("##################")
 
 
-def print_info():
-    for book in book_list:
-        book.book_details()
-
-
 class User:
     def __init__(self, name, address):
         self.name = name
@@ -37,6 +32,11 @@ class User:
         print("Fee: $", self.fees)
         print("##################")
 
+def print_info():
+    for book in book_list:
+        book.book_details()
+
+
 def print_user():
     for user in user_list:
         user.user_details()
@@ -45,7 +45,7 @@ def add_user():
     name = input("Enter the new users name: ").title()
     address = input("Enter the new users address: ")
     User(name, address)
-    print(name, address, "has been added to the user list")
+    print(f"{name} at {address} has been added to the user list")
 
 def add_book():
     title = input("Enter the new books title: ").title()
@@ -54,6 +54,7 @@ def add_book():
     isbn = input("Enter the books ISBN number: ")
     Book(title, author, dewey, isbn)
     print(f"{title} has been added to the book list")
+    print()
 
 def find_user():
     user_to_find = input("Enter the name of user: ").title()
@@ -65,7 +66,43 @@ def find_user():
     return None
 
 def find_book():
-    book_to_find = input("WHat book would you like to ")
+    book_to_find = input("Enter name of book:  ")
+    for book in book_list:
+        if book.title == book_to_find:
+            print(f"The book {book_to_find} is in our database")
+        return book
+    print("Sorry no book was found in that name")
+    find_book()
+
+def lend_book():
+    user = find_user()
+    print()
+    if user:
+        book = find_book()
+        if book.avalible:
+            confirm = input("Type 'Y' if you want to borrow this book: ")
+            if confirm == "Y" or confirm == "y":
+                print(f"The book {book.title} is now on loan to {user.name}")
+            book.avalible = False
+            book.borrower = user.name
+            user.borrowed_books.append(book.title)
+        else:
+            print(f"Sorry {book.title} is already out on loan")
+
+def return_book():
+    user = find_user()
+    print()
+    if user:
+        book = find_book()
+        if book.title in user.borrowed_books:
+            confirm = input(" Press 'Y' is you want to return this book: ")
+            if confirm == "Y" or confirm == "y":
+                print(f"{book.title} has been returned")
+            book.avalible = True
+            book.borrower = user.name
+            user.borrowed_books.remove(book.title)
+        else:
+            print(f"Sorry {book.title} is already out on loan")
 
 # main routine
 book_list = []
@@ -80,10 +117,28 @@ User("Susan", "1011 Binary Road")
 User("Paul", "25 Appletree Drive")
 User("Mary", "8 Moon Cres")
 
-#print_user()
-#print_info()
-#add_user()
-#print_user()
-#add_book()
-#print_info()
-find_user()
+new_action = True
+while new_action:
+    print("##### Menu #####")
+    print("1. Lend a book")
+    print("2. Return a book")
+    print("3. Add a user")
+    print("4. Add a book")
+    print("5. Exit")
+
+    choice = input("What would you like to do \n"
+                   " - Enter a number: ")
+
+    if choice == "1":
+        lend_book()
+    elif choice == "2":
+        return_book()
+    elif choice == "3":
+        add_user()
+    elif choice == "4":
+        add_book()
+    elif choice == "5":
+        print("Goodbye")
+        new_action = False
+    else:
+        print("*** Sorry that is not a valid option *** ")
